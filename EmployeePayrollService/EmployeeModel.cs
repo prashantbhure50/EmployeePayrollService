@@ -9,6 +9,10 @@ namespace EmployeePayrollService
     public class EmployeeModel
     {
         public int EmployeeID { get; set; }
+        public int ID { get; set; }
+        public int month { get; set; }
+        public int salary { get; set; }
+        public int EmpId { get; set; }
         public string EmployeeName { get; set; }
         public string PhoneNumber { get; set; }
         public string Address { get; set; }
