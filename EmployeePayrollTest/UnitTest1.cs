@@ -12,11 +12,11 @@ namespace EmployeePayrollTest
         {
             EmployeeRepo repo = new EmployeeRepo();
             EmployeeModel employee = new EmployeeModel();
-            employee.EmployeeName = "Mohan";
-            employee.Department = "Tech1";
+            employee.EmployeeName = "Terisa";
+            employee.Department = "Hr";
             employee.PhoneNumber = "6302907678";
-            employee.Address = "02-Patna";
-            employee.Gender = 'M';
+            employee.Address = "Usa";
+            employee.Gender = 'F';
             employee.BasicPay = 10000.00M;
             employee.Deductions = 1500.00;
             employee.StartDate = Convert.ToDateTime("2020-11-03");

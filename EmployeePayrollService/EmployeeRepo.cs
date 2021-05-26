@@ -100,6 +100,39 @@ namespace EmployeePayrollService
             return false;
         }
 
+        public bool UpdateSalary(EmployeeModel model) 
+        {
+            try
+            {
+                using (this.connection)
+                {
+                    //var qury=values()
+                    SqlCommand command = new SqlCommand("spUpdateEmployeeSalary", this.connection);
+                    command.CommandType = System.Data.CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@Id", model.ID);
+                    command.Parameters.AddWithValue("@salary", model.salary);
+                    this.connection.Open();
+                    var result = command.ExecuteNonQuery();
+                    this.connection.Close();
+                    if (result != 0)
+                    {
+
+                        return true;
+                    }
+                    return false;
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+            finally
+            {
+                this.connection.Close();
+            }
+            return false;
+        }
+
     }
 
 }
