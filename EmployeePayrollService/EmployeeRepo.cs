@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
@@ -29,7 +30,7 @@ namespace EmployeePayrollService
                             employeeModel.EmployeeID = dr.GetInt32(0);
 
                             employeeModel.EmployeeName = dr.GetString(1);
-                            employeeModel.BasicPay = dr.GetDecimal(2);
+                            employeeModel.BasicPay = dr.GetDouble(2);
                             employeeModel.StartDate = dr.GetDateTime(3);
                             employeeModel.Gender = Convert.ToChar(dr.GetString(4));
                             //employeeModel.PhoneNumber = dr.GetString(5);
@@ -55,7 +56,7 @@ namespace EmployeePayrollService
             }
         }
 
-        public bool AddEmployee(EmployeeModel model)
+        public bool Add_Employee(EmployeeModel model)
         {
             try
             {
@@ -100,7 +101,7 @@ namespace EmployeePayrollService
             return false;
         }
 
-        public bool UpdateSalary(EmployeeModel model) 
+        public bool Update_Salary(EmployeeModel model) 
         {
             try
             {
@@ -111,6 +112,7 @@ namespace EmployeePayrollService
                     command.CommandType = System.Data.CommandType.StoredProcedure;
                     command.Parameters.AddWithValue("@Id", model.ID);
                     command.Parameters.AddWithValue("@salary", model.salary);
+                    
                     this.connection.Open();
                     var result = command.ExecuteNonQuery();
                     this.connection.Close();
@@ -131,6 +133,93 @@ namespace EmployeePayrollService
                 this.connection.Close();
             }
             return false;
+        }
+        public bool Insert_Employee_Record(EmployeeModel employee)
+        {
+            employee.Deductions = Convert.ToInt32(0.2 * employee.BasicPay);
+            employee.TaxablePay = employee.BasicPay - employee.Deductions;
+            employee.Tax = Convert.ToInt32(0.1 * employee.TaxablePay);
+            employee.NetPay = employee.BasicPay - employee.Tax;
+            SqlConnection connection = new SqlConnection(connectionString);
+
+
+            string storedProcedure = "sp_InsertEmployeePayrollDetails";
+            string storedProcedurePayroll = "sp_InsertPayrollDetails";
+            using (connection)
+            {
+                connection.Open();
+                SqlTransaction transaction;
+                transaction = connection.BeginTransaction("Insert Employee Transaction");
+                try
+                {
+                    SqlCommand sqlCommand = new SqlCommand(storedProcedure, connection, transaction);
+                    sqlCommand.CommandType = CommandType.StoredProcedure;
+                    sqlCommand.Parameters.AddWithValue("@StartDate", employee.StartDate);
+                    sqlCommand.Parameters.AddWithValue("@Name", employee.EmployeeName);
+                    sqlCommand.Parameters.AddWithValue("@Gender", employee.Gender);
+                    sqlCommand.Parameters.AddWithValue("@PhoneNumber", employee.PhoneNumber);
+                    sqlCommand.Parameters.AddWithValue("@Address", employee.Address);
+                    SqlParameter outPutVal = new SqlParameter("@scopeIdentifier", SqlDbType.Int);
+                    outPutVal.Direction = ParameterDirection.Output;
+                    sqlCommand.Parameters.Add(outPutVal);
+
+                    sqlCommand.ExecuteNonQuery();
+                    //SqlCommand sqlCommand1 = new SqlCommand(storedProcedurePayroll, connection, transaction);
+                    //sqlCommand1.CommandType = CommandType.StoredProcedure;
+                    //sqlCommand1.Parameters.AddWithValue("@ID", outPutVal.Value);
+                    //sqlCommand1.Parameters.AddWithValue("@BasicPay", employee.BasicPay);
+                    //sqlCommand1.Parameters.AddWithValue("@Deduction", employee.Deductions);
+                    //sqlCommand1.Parameters.AddWithValue("@TaxablePay", employee.TaxablePay);
+                    //sqlCommand1.Parameters.AddWithValue("@IncomeTax", employee.Tax);
+                    //sqlCommand1.Parameters.AddWithValue("@NetPay", employee.NetPay);
+                    //sqlCommand1.ExecuteNonQuery();
+                    transaction.Commit();
+                    connection.Close();
+                }
+
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    try
+                    {
+                        transaction.Rollback();
+                    }
+                    catch (Exception ex2)
+                    {
+
+                        Console.WriteLine(ex2.Message);
+                    }
+                }
+                return false;
+            }
+
+        }
+        public void Method_For_Multi_Threading()
+        {
+            try
+            {
+                EmployeeModel employee = new EmployeeModel();
+                employee.EmployeeName = "JACKSON";
+                employee.Department = "offshore";
+                employee.PhoneNumber = "6304525678";
+                employee.Address = "05-JABALPUR";
+                employee.Gender = 'M';
+                employee.BasicPay = 200000.00;
+                employee.Deductions = 15000;
+                employee.StartDate = Convert.ToDateTime("2020-01-03");
+                Task thread = new Task(() =>
+                {
+                    // Console.WriteLine("Employee being added: " + employeeData.EmployeeName);
+                    this.AddEmployee(employee);
+                    // Console.WriteLine("Employee added: " + employeeData.EmployeeName);
+                });
+                thread.Start();
+            }
+            catch (Exception error)
+            {
+                Console.WriteLine(error.Message);
+            }
+
         }
 
     }
