@@ -15,7 +15,7 @@ namespace EmployeePayrollService
             EmployeeModel employee = new EmployeeModel();
              employee.EmployeeName = "Mohan";
             //employee.BasicPay = 10000.00M;
-            employee.StartDate = Convert.ToDateTime("2020-11-03");
+            employee.StartDate = Convert.ToString("2020-11-03");
             employee.Gender = 'M';
             employee.PhoneNumber = "6302907678";
             employee.Address = "02-Patna";
