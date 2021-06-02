@@ -23,8 +23,8 @@ namespace EmployeePayrollService
         public double TaxablePay { get; set; }
         public double Tax { get; set; }
         public double NetPay { get; set; }
-        public double area { get; set; }
-        public DateTime StartDate { get; set; }
+        public string area { get; set; }
+        public string StartDate { get; set; }
 
 
 

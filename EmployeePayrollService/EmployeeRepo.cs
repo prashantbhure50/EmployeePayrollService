@@ -31,7 +31,7 @@ namespace EmployeePayrollService
 
                             employeeModel.EmployeeName = dr.GetString(1);
                             employeeModel.BasicPay = dr.GetDouble(2);
-                            employeeModel.StartDate = dr.GetDateTime(3);
+                            employeeModel.StartDate = dr.GetString(3);
                             employeeModel.Gender = Convert.ToChar(dr.GetString(4));
                             //employeeModel.PhoneNumber = dr.GetString(5);
                             //employeeModel.Address = dr.GetString(6);
@@ -55,7 +55,6 @@ namespace EmployeePayrollService
                 System.Console.WriteLine(e.Message);
             }
         }
-
         public bool Add_Employee(EmployeeModel model)
         {
             try
@@ -100,7 +99,6 @@ namespace EmployeePayrollService
             }
             return false;
         }
-
         public bool Update_Salary(EmployeeModel model) 
         {
             try
@@ -206,7 +204,7 @@ namespace EmployeePayrollService
                 employee.Gender = 'M';
                 employee.BasicPay = 200000.00;
                 employee.Deductions = 15000;
-                employee.StartDate = Convert.ToDateTime("2020-01-03");
+                employee.StartDate = Convert.ToString("2020-01-03");
                 Task thread = new Task(() =>
                 {
                     // Console.WriteLine("Employee being added: " + employeeData.EmployeeName);
@@ -221,7 +219,5 @@ namespace EmployeePayrollService
             }
 
         }
-
     }
-
 }
