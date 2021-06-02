@@ -144,7 +144,7 @@ namespace EmployeePayrollService
 
 
             string storedProcedure = "sp_InsertEmployeePayrollDetails";
-            string storedProcedurePayroll = "sp_InsertPayrollDetails";
+            //string storedProcedurePayroll = "sp_InsertPayrollDetails";
             using (connection)
             {
                 connection.Open();
@@ -210,7 +210,7 @@ namespace EmployeePayrollService
                 Task thread = new Task(() =>
                 {
                     // Console.WriteLine("Employee being added: " + employeeData.EmployeeName);
-                    this.AddEmployee(employee);
+                    this.Add_Employee(employee);
                     // Console.WriteLine("Employee added: " + employeeData.EmployeeName);
                 });
                 thread.Start();
